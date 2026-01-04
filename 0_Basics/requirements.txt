@@ -45,3 +45,9 @@ nest_asyncio
 pydantic-ai[logfire]
 datasets
 phidata
+streamlit
+openai
+boto3
+python-dotenv
+PyPDF2
+requests
