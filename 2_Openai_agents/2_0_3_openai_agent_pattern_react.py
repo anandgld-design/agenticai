@@ -35,7 +35,7 @@ Final:
 )
 
 # -------------------------------------------------
-# ASYNC RUNNER WITH STREAMING
+# RUNNER
 # -------------------------------------------------
 async def main():
     problem_statement = """
@@ -48,13 +48,8 @@ async def main():
     - Failures disappear when tests are run sequentially
     """
 
-    result = Runner.run_streamed(react_agent, problem_statement)
-
-    # Stream output in real-time
-    async for event in result.stream_events():
-        if hasattr(event, 'delta'):
-            print(event.delta, end="", flush=True)
-
+    result = await Runner.run(react_agent, problem_statement)
+    print(result.final_output)
     print("\n")
 
 

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 # --------------------------------
-# SIMPLE TOOLS - Fast & Cheap
+# Tool call
 # --------------------------------
 @function_tool
 def get_temperature(city: str) -> str:
