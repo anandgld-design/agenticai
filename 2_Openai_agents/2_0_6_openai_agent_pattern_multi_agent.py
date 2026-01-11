@@ -1,26 +1,65 @@
 import asyncio
+import json
+import re
 from dotenv import load_dotenv
 from agents import Agent, Runner
+from pathlib import Path
 
 load_dotenv(override=True)
+
+# --------------------------------
+# UTILITY: Clean JSON output from agent
+# --------------------------------
+def extract_json(text: str) -> str:
+    """
+    Extract the first {...} block from text.
+    This handles cases where the agent adds extra commentary.
+    """
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+    if match:
+        return match.group(0)
+    return text  # fallback
+
+def safe_parse_json(text: str) -> dict:
+    """
+    Extract and parse JSON safely, with fallback to raw text.
+    """
+    try:
+        clean_text = extract_json(text)
+        return json.loads(clean_text)
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON", "raw_output": text}
 
 # --------------------------------
 # AGENT 1: PLANNER
 # --------------------------------
 planner_agent = Agent(
-    name="AdmissionPlannerAgent",
+    name="HRPlannerAgent",
     model="gpt-4o-mini",
     instructions="""
-You are a Planning Agent for a student admission system.
+You are a Planner Agent for HR candidate filtering.
 
 Task:
-- Extract Applicant and Program details
-- State the evaluation criteria clearly
+- Extract candidate details: skills, experience, projects, statement
+- Summarize candidate suitability for the role 'Agentic AI Developer/Architect'
 
-Output ONLY:
-- Applicant summary
-- Program summary
-- Evaluation formula
+VERY IMPORTANT:
+- Output MUST be valid JSON only.
+- Do NOT include any extra explanation or text.
+- Escape newlines inside strings.
+
+JSON FORMAT:
+{
+  "Candidate": {
+    "name": "...",
+    "skills": [...],
+    "experience_years": ...,
+    "projects": [...],
+    "statement": "..."
+  },
+  "Role": "Agentic AI Developer/Architect",
+  "EvaluationFormula": "..."
+}
 """
 )
 
@@ -28,25 +67,27 @@ Output ONLY:
 # AGENT 2: EVALUATOR
 # --------------------------------
 evaluator_agent = Agent(
-    name="EligibilityEvaluatorAgent",
+    name="HREvaluatorAgent",
     model="gpt-4o-mini",
     instructions="""
-You are an Evaluation Agent.
-
-Ontology:
-- Applicant: {name, marks, interview_score}
-- Program: {cutoff_marks}
-
-Rule:
-- (marks + interview_score) / 2 >= cutoff → eligible
-- otherwise → not eligible
+You are an Evaluation Agent for HR.
 
 Input:
-- Planner Agent output
+- Planner Agent JSON output
 
-Output ONLY:
-- Eligibility status
-- Computation details
+Task:
+- Compare candidate skills, experience, and projects to role requirements
+- Consider statement quality for agentic AI experience
+- Output MUST indicate whether candidate is suitable
+
+VERY IMPORTANT:
+- Output MUST be valid JSON only.
+- Do NOT include extra text or commentary.
+
+JSON FORMAT:
+{
+  "Suitability": {"status": "...", "reason": "..."}
+}
 """
 )
 
@@ -54,49 +95,88 @@ Output ONLY:
 # AGENT 3: DECIDER
 # --------------------------------
 decider_agent = Agent(
-    name="AdmissionDecisionAgent",
+    name="HRDeciderAgent",
     model="gpt-4o-mini",
     instructions="""
-You are a Decision Agent.
+You are a Decision Agent for HR candidate selection.
 
 Input:
-- Eligibility evaluation
+- Planner JSON output
+- Evaluator JSON output
 
 Task:
-- Decide Admit or Reject
+- Decide whether to invite candidate for interview or reject
 - Provide final justification
 
-Output ONLY:
-- Decision
-- Reason
+VERY IMPORTANT:
+- Output MUST be valid JSON only.
+- Do NOT include extra explanation or commentary.
+
+JSON FORMAT:
+{
+  "Candidate": {...},
+  "Role": "Agentic AI Developer/Architect",
+  "Suitability": {...},
+  "Decision": "...",
+  "Justification": "..."
+}
 """
 )
 
 # --------------------------------
-# MULTI-AGENT ORCHESTRATION
+# PROCESS SINGLE CANDIDATE
 # --------------------------------
-async def main():
-    user_input = """
-Applicant Details:
-- Name: Alice Johnson
-- Marks: 82
-- Interview Score: 78
+async def process_candidate(candidate: dict) -> dict:
+    planner_input = f"""
+Candidate Details:
+- Name: {candidate['name']}
+- Skills: {', '.join(candidate['skills'])}
+- Experience (years): {candidate['experience_years']}
+- Projects: {', '.join(candidate['projects'])}
+- Statement: {candidate['statement']}
 
-Program:
-- Name: M.S. in AI
-- Cutoff Marks: 80
+Role: Agentic AI Developer/Architect
 """
-
     # Step 1: Planning
-    plan_result = await Runner.run(planner_agent, user_input)
+    plan_result = await Runner.run(planner_agent, planner_input)
+    plan_json = safe_parse_json(plan_result.final_output)
 
     # Step 2: Evaluation
-    eval_result = await Runner.run(evaluator_agent, plan_result.final_output)
+    eval_result = await Runner.run(evaluator_agent, json.dumps(plan_json))
+    eval_json = safe_parse_json(eval_result.final_output)
 
     # Step 3: Decision
-    decision_result = await Runner.run(decider_agent, eval_result.final_output)
+    decider_input = json.dumps({
+        "PlannerOutput": plan_json,
+        "EvaluatorOutput": eval_json
+    })
+    decision_result = await Runner.run(decider_agent, decider_input)
+    decision_json = safe_parse_json(decision_result.final_output)
 
-    print(decision_result.final_output)
+    return decision_json
+
+# --------------------------------
+# MAIN LOOP
+# --------------------------------
+async def main():
+    # Load candidates from JSON file
+    with open(r"c:\code\agenticai\2_openai_agents\candidates.json", "r", encoding="utf-8") as f:
+        candidates = json.load(f)
+
+    # Output file (full JSON array)
+    output_file = Path(r"c:\code\agenticai\2_openai_agents\candidate_decisions.json")
+    all_decisions = []
+
+    for candidate in candidates:
+        decision_json = await process_candidate(candidate)
+        all_decisions.append(decision_json)
+        print(f"Processed candidate: {candidate['name']}")
+
+    # Write all decisions to a single JSON array
+    with output_file.open("w", encoding="utf-8") as f:
+        json.dump(all_decisions, f, indent=2)
+
+    print(f"\nAll candidate decisions written to {output_file.resolve()}")
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -13,28 +13,26 @@
         "triggerOn": "specificFolder",
         "folderToWatch": {
           "__rl": true,
-          "value": "1zuOscSxUcIXAO7vjtc356DveJB6WgzdA",
+          "value": "1DvoVTKx0vrTnfvLpTM6b5gqCPUafSvbi",
           "mode": "list",
-          "cachedResultName": "n8ndemo",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1zuOscSxUcIXAO7vjtc356DveJB6WgzdA"
+          "cachedResultName": "cheque_images",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1DvoVTKx0vrTnfvLpTM6b5gqCPUafSvbi"
         },
         "event": "fileCreated",
-        "options": {
-          "fileType": "all"
-        }
+        "options": {}
       },
       "type": "n8n-nodes-base.googleDriveTrigger",
       "typeVersion": 1,
       "position": [
-        -464,
-        0
+        -1040,
+        -112
       ],
-      "id": "a7f21b38-11a0-4def-a6bc-39725e9d0a97",
+      "id": "5e58f7bd-9566-4405-b9ea-5b41b27ee7b8",
       "name": "Google Drive Trigger",
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "i2DpYqmEoEOuvi0g",
-          "name": "Google Drive account"
+          "id": "dLwq2uXe8V30gayT",
+          "name": "ekahate-gdrive"
         }
       }
     },
@@ -53,15 +51,15 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -256,
-        0
+        -832,
+        -112
       ],
-      "id": "ee1a5b3f-ba90-4156-9b58-bf61741a32e7",
+      "id": "f5e7cecb-203e-4ca7-a82c-c704f8115e18",
       "name": "Download file",
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "i2DpYqmEoEOuvi0g",
-          "name": "Google Drive account"
+          "id": "dLwq2uXe8V30gayT",
+          "name": "ekahate-gdrive"
         }
       }
     },
@@ -71,171 +69,167 @@
         "operation": "analyze",
         "modelId": {
           "__rl": true,
-          "value": "models/gemini-flash-lite-latest",
+          "value": "models/gemini-2.5-flash",
           "mode": "list",
-          "cachedResultName": "models/gemini-flash-lite-latest"
+          "cachedResultName": "models/gemini-2.5-flash"
         },
-        "text": "Extract payer, payee, amount, bank, date details from this cheque. Give output exactly in this format:\n\nPayer name: Actual payer name\nPayee name: Actual payee name\nDate: yyyy-mm-dd format\nAmount: Numeric value only\nBank: Actual bank name\n\nDo not add any other text/formatting",
+        "text": "Extract payer, payee, amount, bank, date fields from the cheque image. \n\nGive output exactly in this format:\nPayer name: Actual payer name\nPayee name: Actual payee name\nDate: yyyy-mm-dd\nAmount: Numeric value only\nBank: Actual Bank Name",
         "inputType": "binary",
-        "simplify": false,
-        "options": {
-          "maxOutputTokens": 300
-        }
+        "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        -48,
-        0
+        -624,
+        -112
       ],
-      "id": "435810ef-e94c-4758-b800-e0bd26e76278",
+      "id": "a6fe5f14-1548-4ec8-94d2-aac56dcbe8a6",
       "name": "Analyze an image",
       "credentials": {
         "googlePalmApi": {
-          "id": "5mNRK7Tw1NFnyugQ",
-          "name": "Google Gemini(PaLM) Api account 3"
+          "id": "7JwEKdpjfIHANu8p",
+          "name": "Gemini-API-Key"
         }
       }
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "// -------------------------------------------\n// 1. READ TEXT FROM YOUR JSON STRUCTURE\n// -------------------------------------------\nconst text =\n  item.json?.candidates?.[0]?.content?.parts?.[0]?.text || \"\";\n\n// -------------------------------------------\n// 2. SPLIT INTO LINES\n// -------------------------------------------\nconst lines = text.split(\"\\n\");\n\nfunction getValue(label) {\n  const line = lines.find(\n    l => l.toLowerCase().startsWith(label.toLowerCase())\n  );\n  if (!line) return \"\";\n  return line.split(\":\")[1].trim();\n}\n\n// -------------------------------------------\n// 3. EXTRACT FIELDS\n// -------------------------------------------\nconst payer = getValue(\"Payer name\");\nconst payee = getValue(\"Payee name\");\n\n// Amount\nlet amountRaw = getValue(\"Amount\");\nlet amount = null;\nif (amountRaw) {\n  amount = parseFloat(amountRaw.replace(/,/g, \"\").trim());\n}\n\n// -------------------------------------------\n// 4. DATE FORMAT FIX\n// -------------------------------------------\nfunction formatDate(d) {\n  if (!d) return null;\n\n  // Already ISO YYYY-MM-DD\n  if (/^\\d{4}-\\d{2}-\\d{2}$/.test(d)) return d;\n\n  // DD/MM/YYYY or DD-MM-YYYY\n  const m = d.match(/(\\d{1,2})[\\/-](\\d{1,2})[\\/-](\\d{4})/);\n  if (m) {\n    const [_, dd, mm, yy] = m;\n    return `${yy}-${mm.padStart(2, \"0\")}-${dd.padStart(2, \"0\")}`;\n  }\n\n  return null;\n}\n\nconst cheque_date = formatDate(getValue(\"Date\"));\nconst bank = getValue(\"Bank\");\n\n// -------------------------------------------\n// 5. RETURN CLEAN JSON (ALL FIELDS AT TOP LEVEL)\n// -------------------------------------------\nreturn {\n  json: {\n    payer,\n    payee,\n    amount,\n    bank,\n    cheque_date,   // date at top level\n    raw: text\n  }\n};\n"
+        "text": "={{ $json.content.parts[0].text }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "Payer Name",
+              "description": "Payer Name"
+            },
+            {
+              "name": "Payee Name",
+              "description": "Payee Name"
+            },
+            {
+              "name": "Date",
+              "type": "date",
+              "description": "Date"
+            },
+            {
+              "name": "Amount",
+              "type": "number",
+              "description": "Amount"
+            },
+            {
+              "name": "Bank",
+              "description": "Bank"
+            }
+          ]
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
       "position": [
-        160,
-        0
+        -416,
+        -112
       ],
-      "id": "25da4057-cbca-4c14-b4c4-aef3cf134ee4",
-      "name": "Code in JavaScript"
+      "id": "6c339a3a-2d75-4042-92b2-5ffb54b6f613",
+      "name": "Information Extractor"
     },
     {
       "parameters": {
-        "operation": "create",
-        "base": {
-          "__rl": true,
-          "value": "appaUwpqsxmZmIkBC",
-          "mode": "list",
-          "cachedResultName": "cheques_data",
-          "cachedResultUrl": "https://airtable.com/appaUwpqsxmZmIkBC"
-        },
-        "table": {
-          "__rl": true,
-          "value": "tblqOQGX4vB4duUAy",
-          "mode": "list",
-          "cachedResultName": "cheque",
-          "cachedResultUrl": "https://airtable.com/appaUwpqsxmZmIkBC/tblqOQGX4vB4duUAy"
-        },
-        "columns": {
-          "mappingMode": "autoMapInputData",
-          "value": {
-            "amount": "={{ $json.amount }}",
-            "payer": "={{ $json.payer }}",
-            "payee": "={{ $json.payee }}",
-            "bank": "={{ $json.bank }}",
-            "cheque_date": "={{ $json.fields.cheque_date }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "id",
-              "displayName": "id",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": true,
-              "removed": true
-            },
-            {
-              "id": "payer",
-              "displayName": "payer",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "payee",
-              "displayName": "payee",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "cheque_date",
-              "displayName": "cheque_date",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "dateTime",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "amount",
-              "displayName": "amount",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "number",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "raw",
-              "displayName": "raw",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "bank",
-              "displayName": "bank",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {
-          "typecast": true
-        }
+        "options": {}
       },
-      "type": "n8n-nodes-base.airtable",
-      "typeVersion": 2.1,
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
       "position": [
-        368,
-        0
+        -416,
+        64
       ],
-      "id": "517fafd4-1207-4bbf-901c-6be42b1d8c1d",
-      "name": "Create a record",
+      "id": "1521cb78-b5fd-471e-a5a9-04ff57ff6ccb",
+      "name": "Ollama Model",
       "credentials": {
-        "airtableTokenApi": {
-          "id": "6ENi8nXZ738X2nCq",
-          "name": "Airtable Personal Access Token account"
+        "ollamaApi": {
+          "id": "eyaO4Vf1gJCs1KgI",
+          "name": "Local-Ollama"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "839ea75f-b88c-4fb7-b69b-6bc2a2d82d61",
+              "name": "output['Payer Name']",
+              "value": "={{ $json.output['Payer Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9bb862d5-eb9a-4d9c-9d82-7370574983e7",
+              "name": "output['Payee Name']",
+              "value": "={{ $json.output['Payee Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f9a6f377-72aa-4489-a219-e51eea48385c",
+              "name": "output.Date",
+              "value": "={{ $json.output.Date }}",
+              "type": "string"
+            },
+            {
+              "id": "98dbb16c-b7f6-4a5d-a6f2-708394be413d",
+              "name": "output.Amount",
+              "value": "={{ $json.output.Amount }}",
+              "type": "number"
+            },
+            {
+              "id": "01698ce2-45c4-4589-9958-d9961ec3ed23",
+              "name": "output.Bank",
+              "value": "={{ $json.output.Bank }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        -112
+      ],
+      "id": "815c2f52-1af0-43e1-87a9-43afc2112af2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        128,
+        -112
+      ],
+      "id": "7223dcb4-32f2-486b-8db3-6ed3972ec22e",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "atulkahate-n8n",
+        "fileName": "chequedata",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsS3",
+      "typeVersion": 2,
+      "position": [
+        336,
+        -112
+      ],
+      "id": "a035ccbe-edf6-4aa5-8ece-ff3ff9f9f83f",
+      "name": "Upload a file",
+      "credentials": {
+        "aws": {
+          "id": "eBxBedJsbOgceWa4",
+          "name": "AWS account"
         }
       }
     }
@@ -268,18 +262,51 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "Information Extractor",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code in JavaScript": {
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
       "main": [
         [
           {
-            "node": "Create a record",
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
             "type": "main",
             "index": 0
           }
@@ -291,11 +318,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a11750a3-aecf-4cff-854c-669d205e57aa",
+  "versionId": "d58bdedf-826d-4bf7-afef-c63c261ca9f9",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "4d97cb4244f898240be0381c2d99a8a906571e0ad124280c5b7d9b13601de668"
+    "instanceId": "553512e943ba7f04a9be8c6564bdf53e99760923ce4f54ddfd89c7039f74c3d7"
   },
-  "id": "ieDCvGpZyCQOlkmm",
+  "id": "90NBeHVDwUSrYkps",
   "tags": []
 }

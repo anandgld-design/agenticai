@@ -3,24 +3,38 @@
   "nodes": [
     {
       "parameters": {
-        "formTitle": "Customer Support",
+        "formTitle": "Feedback Form",
         "formFields": {
           "values": [
             {
-              "fieldLabel": "First Name",
+              "fieldLabel": "Your Name",
               "requiredField": true
             },
             {
-              "fieldLabel": "Last Name",
+              "fieldLabel": "Your Email",
               "requiredField": true
             },
             {
-              "fieldLabel": "Email",
-              "fieldType": "email",
+              "fieldLabel": "Your Course",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Agentic AI"
+                  },
+                  {
+                    "option": "Gen AI"
+                  },
+                  {
+                    "option": "ML"
+                  }
+                ]
+              },
               "requiredField": true
             },
             {
-              "fieldLabel": "Issue/Concern"
+              "fieldLabel": "Your Feedback",
+              "requiredField": true
             }
           ]
         },
@@ -32,56 +46,45 @@
         0,
         0
       ],
-      "id": "027e3196-5d4a-45db-b63b-68410034c135",
+      "id": "0e3f4b4b-ac2e-47f5-9f43-6fdf318aaae7",
       "name": "On form submission",
-      "webhookId": "04c0ab02-f794-4c51-a4d2-16f58d52224e"
+      "webhookId": "dd8b863a-ae95-4c3c-bddf-658568b0af9d"
     },
     {
       "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1f-xUG70kI6t1Sj7jgErw3wt61N3d6Q2f3cxxzQ41rRg",
+          "value": "1wA0AAauU9cdkhW8_O3nxNSMDkMTNaa5Za19oao3_vGU",
           "mode": "list",
-          "cachedResultName": "customer_service",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f-xUG70kI6t1Sj7jgErw3wt61N3d6Q2f3cxxzQ41rRg/edit?usp=drivesdk"
+          "cachedResultName": "n8n_test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wA0AAauU9cdkhW8_O3nxNSMDkMTNaa5Za19oao3_vGU/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f-xUG70kI6t1Sj7jgErw3wt61N3d6Q2f3cxxzQ41rRg/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wA0AAauU9cdkhW8_O3nxNSMDkMTNaa5Za19oao3_vGU/edit#gid=0"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "First Name": "={{ $json['First Name'] }}",
-            "Last Name": "={{ $json['Last Name'] }}",
-            "Email": "={{ $json.Email }}",
-            "Issue/Complaint": "={{ $json['Issue/Concern'] }}"
+            "User Name": "={{ $json['Your Name'] }}",
+            "Email": "={{ $json['Your Email'] }}",
+            "Course": "={{ $json['Your Course'] }}",
+            "Feedback": "={{ $json['Your Feedback'] }}"
           },
           "matchingColumns": [],
           "schema": [
             {
-              "id": "First Name",
-              "displayName": "First Name",
+              "id": "User Name",
+              "displayName": "User Name",
               "required": false,
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "Last Name",
-              "displayName": "Last Name",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Email",
@@ -90,18 +93,25 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
-              "id": "Issue/Complaint",
-              "displayName": "Issue/Complaint",
+              "id": "Course",
+              "displayName": "Course",
               "required": false,
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Feedback",
+              "displayName": "Feedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -115,20 +125,20 @@
         208,
         0
       ],
-      "id": "84ac19eb-3bbd-4e40-81f5-70aef19da8c7",
+      "id": "949d934b-d61a-42f3-89a9-d1e6a498151f",
       "name": "Append row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "tnu4C74m1pQ9yfUz",
-          "name": "Google Sheets account"
+          "id": "hISyalXGc1JynvZb",
+          "name": "ekahate-google"
         }
       }
     },
     {
       "parameters": {
         "sendTo": "={{ $json.Email }}",
-        "subject": "Acknowledging your message",
-        "message": "=Dear  {{ $json['First Name'] }}  {{ $json['Last Name'] }},\n\nThis is to acknowledge your message to us. Please be assured that we will look into the issue/complaint and revert to you.\n\nThanks.",
+        "subject": "Acknowledging your feedback",
+        "message": "=Dear  {{ $json['User Name'] }},\n\nThank you for your feedback about the course {{ $json.Course }}.",
         "options": {}
       },
       "type": "n8n-nodes-base.gmail",
@@ -137,13 +147,13 @@
         416,
         0
       ],
-      "id": "5709ac8c-0f56-44e6-8fc9-944c3013fcf4",
+      "id": "d9783a2f-9dc3-4352-aaff-f234e5c57c88",
       "name": "Send a message",
-      "webhookId": "c1c0f341-1a5d-48f7-a9bb-8b00899b7757",
+      "webhookId": "da5479c6-ac14-4768-a1b8-b360a5b87221",
       "credentials": {
         "gmailOAuth2": {
-          "id": "H8Obwo0uYeZNbz8o",
-          "name": "Gmail account"
+          "id": "LMedC1Cba6iLoS4B",
+          "name": "ekahate-gmail"
         }
       }
     }
@@ -177,11 +187,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "e7fa9992-9493-4dea-bfbd-6d659a23e3bb",
+  "versionId": "7f585a98-0608-4c1b-a9bd-c42ba495ab9f",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "4d97cb4244f898240be0381c2d99a8a906571e0ad124280c5b7d9b13601de668"
+    "instanceId": "553512e943ba7f04a9be8c6564bdf53e99760923ce4f54ddfd89c7039f74c3d7"
   },
-  "id": "3S5cwjX4RGzyt8GY",
+  "id": "IURVWC0pYm0hTvDg",
   "tags": []
 }

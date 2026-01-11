@@ -11,9 +11,9 @@
         0,
         0
       ],
-      "id": "c909ef41-8f86-4c3b-807d-c18a1c7d9378",
+      "id": "d2841273-32c6-4e73-aff9-66a66b94c5c4",
       "name": "When chat message received",
-      "webhookId": "677e2bb8-096b-4982-a0c4-791ce96a74c1"
+      "webhookId": "7edb7142-fa15-4bba-914f-b43acc0efb40"
     },
     {
       "parameters": {
@@ -25,7 +25,7 @@
         208,
         0
       ],
-      "id": "1496685c-22e5-415b-9090-ab67b13dbc1f",
+      "id": "6bba7e35-2a2b-469c-98b2-07c6069449dc",
       "name": "AI Agent"
     },
     {
@@ -38,12 +38,12 @@
         80,
         208
       ],
-      "id": "8558bdc6-417f-49d2-9e67-8db3711f7271",
+      "id": "36881980-bb63-4f7f-8b1e-660ba3f80f5f",
       "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
-          "id": "Q1CAQ5qI0fHOmcbT",
-          "name": "Google Gemini(PaLM) Api account"
+          "id": "7JwEKdpjfIHANu8p",
+          "name": "Gemini-API-Key"
         }
       }
     },
@@ -55,7 +55,7 @@
         368,
         208
       ],
-      "id": "2a381e7b-6fac-4d08-977d-9e9019996393",
+      "id": "28b69848-acde-486b-93c7-5943e74cab65",
       "name": "Wikipedia"
     },
     {
@@ -66,7 +66,7 @@
         224,
         208
       ],
-      "id": "3e348bab-0d15-4806-be0b-c2db8ca4a08d",
+      "id": "587b1984-84f9-4608-9275-28025db08f37",
       "name": "Simple Memory"
     }
   ],
@@ -121,11 +121,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "0fce611e-0acb-4eb2-93cf-644819bc0de7",
+  "versionId": "789ce4fa-7964-4420-ba25-b37587b9d1a4",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "4d97cb4244f898240be0381c2d99a8a906571e0ad124280c5b7d9b13601de668"
+    "instanceId": "553512e943ba7f04a9be8c6564bdf53e99760923ce4f54ddfd89c7039f74c3d7"
   },
-  "id": "KL8DadA2olGwTmaF",
+  "id": "IzDiSdiDt1LIc5O7",
   "tags": []
 }
