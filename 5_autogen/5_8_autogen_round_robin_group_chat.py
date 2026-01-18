@@ -1,3 +1,5 @@
+# pip install autogen-agentchat autogen-ext python-dotenv
+
 import asyncio
 from autogen_agentchat.ui import Console
 from autogen_ext.models.openai import OpenAIChatCompletionClient

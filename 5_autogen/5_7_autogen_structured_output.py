@@ -1,3 +1,5 @@
+# pip install pandas pydantic autogen-agentchat autogen-ext python-dotenv
+
 import asyncio
 import pandas as pd
 from typing import Optional

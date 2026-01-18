@@ -1,3 +1,5 @@
+# pip install pdfplumber autogen-agentchat autogen-ext python-dotenv requests
+
 # Tested with this: https://ijrar.org/papers/IJRAR19K9780.pdf
 import asyncio
 import os

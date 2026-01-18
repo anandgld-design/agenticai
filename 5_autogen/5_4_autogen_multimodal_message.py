@@ -1,3 +1,5 @@
+# pip install autogen-agentchat autogen-core autogen-ext python-dotenv pillow
+
 import asyncio
 from PIL import Image
 from dotenv import load_dotenv

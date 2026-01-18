@@ -1,3 +1,5 @@
+# pip install gradio langchain-community langchain-huggingface langchain-anthropic python-dotenv
+
 import gradio as gr
 from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings

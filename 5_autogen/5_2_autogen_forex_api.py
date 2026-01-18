@@ -1,3 +1,5 @@
+# pip install autogen-agentchat autogen-ext python-dotenv requests
+
 import asyncio
 import os
 import requests

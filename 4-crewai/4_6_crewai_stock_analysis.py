@@ -1,3 +1,5 @@
+# pip install gradio requests python-dotenv crewai
+
 import gradio as gr
 import requests
 from dotenv import load_dotenv

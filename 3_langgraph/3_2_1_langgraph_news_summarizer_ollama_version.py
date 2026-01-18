@@ -1,3 +1,5 @@
+# pip install langchain-ollama langchain-core langgraph python-dotenv requests
+
 from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage
 from dotenv import load_dotenv

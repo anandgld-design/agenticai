@@ -1,3 +1,5 @@
+# pip install langchain-core graphviz
+
 from langchain_core.runnables import RunnableLambda
 import graphviz
 

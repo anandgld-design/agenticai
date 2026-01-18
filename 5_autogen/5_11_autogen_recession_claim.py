@@ -1,3 +1,5 @@
+# pip install pydantic autogen-agentchat autogen-ext python-dotenv requests
+
 import asyncio
 import requests
 from typing import List, Optional

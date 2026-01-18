@@ -1,3 +1,5 @@
+# pip install langchain-community langgraph pandas gradio chromadb
+
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langgraph.graph import StateGraph, END

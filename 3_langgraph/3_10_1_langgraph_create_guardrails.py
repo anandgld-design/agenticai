@@ -1,3 +1,5 @@
+# pip install datasets langchain-community
+
 from datasets import load_dataset
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings

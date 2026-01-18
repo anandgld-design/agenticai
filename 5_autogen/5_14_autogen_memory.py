@@ -1,3 +1,5 @@
+# pip install autogen-agentchat autogen-core autogen-ext
+
 import asyncio
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.ui import Console

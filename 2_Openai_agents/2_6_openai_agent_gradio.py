@@ -1,3 +1,5 @@
+# pip install python-dotenv gradio chromadb openai-agents
+
 from dotenv import load_dotenv
 import asyncio
 import gradio as gr

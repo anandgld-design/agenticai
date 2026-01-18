@@ -1,3 +1,5 @@
+# pip install pandas crewai python-dotenv
+
 """
 Truly Agentic GCP Cost Optimizer - Agents make decisions and collaborate
 """

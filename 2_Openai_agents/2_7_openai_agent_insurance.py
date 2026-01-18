@@ -1,3 +1,5 @@
+# pip install gradio pypdf python-dotenv openai chromadb openai-agents
+
 import os
 import gradio as gr
 from pypdf import PdfReader

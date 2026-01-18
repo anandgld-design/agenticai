@@ -1,3 +1,5 @@
+# pip install langchain-openai langchain-core langgraph python-dotenv requests
+
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 from dotenv import load_dotenv

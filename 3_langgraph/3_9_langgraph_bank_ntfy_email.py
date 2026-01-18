@@ -1,3 +1,5 @@
+# pip install pandas numpy gradio python-dotenv langgraph langchain-community langchain-huggingface requests
+
 import os
 import requests
 import pandas as pd

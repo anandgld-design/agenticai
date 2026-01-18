@@ -1,3 +1,5 @@
+# pip install autogen-agentchat autogen-ext python-dotenv
+
 import asyncio
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import DiGraphBuilder, GraphFlow

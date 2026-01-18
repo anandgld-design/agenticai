@@ -1,4 +1,5 @@
 # Simple Document Generator using CrewAI
+# pip install python-dotenv crewai
 
 from dotenv import load_dotenv
 from crewai import Agent, Task, Crew

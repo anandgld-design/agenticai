@@ -1,3 +1,5 @@
+# pip install openai python-dotenv chromadb openai-agents
+
 from openai import OpenAI
 from dotenv import load_dotenv
 import asyncio

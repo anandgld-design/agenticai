@@ -1,3 +1,5 @@
+# pip install python-dotenv openai-agents
+
 import asyncio
 from agents import Agent, Runner
 from dotenv import load_dotenv

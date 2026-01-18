@@ -1,3 +1,5 @@
+# pip install python-dotenv sentence-transformers chromadb openai-agents
+
 from dotenv import load_dotenv
 import os
 import sqlite3

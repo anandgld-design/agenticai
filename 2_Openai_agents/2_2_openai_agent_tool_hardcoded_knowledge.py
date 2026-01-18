@@ -5,7 +5,6 @@ from agents import Agent, Runner, function_tool
 
 load_dotenv(override=True)
 
-# Enable OpenAI tracing (shows in https://platform.openai.com/logs?api=traces)
 client = OpenAI()
 
 knowledge_base = {

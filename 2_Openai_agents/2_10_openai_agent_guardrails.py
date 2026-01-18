@@ -1,3 +1,5 @@
+# pip install pydantic python-dotenv openai-agents
+
 import asyncio
 from pydantic import BaseModel
 from agents import Agent, GuardrailFunctionOutput, InputGuardrailTripwireTriggered, RunContextWrapper, Runner, input_guardrail

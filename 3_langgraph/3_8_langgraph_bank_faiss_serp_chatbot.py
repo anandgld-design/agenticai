@@ -1,3 +1,5 @@
+# pip install gradio python-dotenv langgraph langchain-community langchain-huggingface langchain-openai requests
+
 import os
 import requests
 import gradio as gr

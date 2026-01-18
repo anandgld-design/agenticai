@@ -1,3 +1,5 @@
+# pip install python-dotenv openai-agents
+
 import asyncio
 from dotenv import load_dotenv
 from agents import Agent, Runner, SQLiteSession, trace
